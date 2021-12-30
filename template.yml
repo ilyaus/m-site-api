@@ -11,7 +11,7 @@ Resources:
     Properties:
       Handler: org.ubf.StreamLambdaHandler::handleRequest
       Runtime: java11
-      CodeUri: .
+      CodeUri: target/m-site-1.0-SNAPSHOT-lambda-package.zip
       MemorySize: 512
       Policies: AWSLambdaBasicExecutionRole
       Timeout: 15
@@ -73,6 +73,6 @@ Resources:
 Outputs:
   MSiteApi:
     Description: URL for application
-    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/ping'
+    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod'
     Export:
       Name: MSiteApi
