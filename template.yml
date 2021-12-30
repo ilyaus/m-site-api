@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Serverless Spring API - org.ubf::m-site
+Globals:
+  Api:
+    EndpointConfiguration: REGIONAL
+
+Resources:
+  MSiteFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.ubf.StreamLambdaHandler::handleRequest
+      Runtime: java11
+      CodeUri: .
+      MemorySize: 512
+      Policies: AWSLambdaBasicExecutionRole
+      Timeout: 15
+      Events:
+        ProxyResource:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: any
+
+  MSiteMemberTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: memberId
+        Type: String
+      TableName: msite-members
+
+  MSiteFellowshipTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: fellowshipId
+        Type: String
+      TableName: msite-fellowship
+
+  MSiteCampusTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: campusId
+        Type: String
+      TableName: msite-campus
+
+  MSiteChapterTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: chapterId
+        Type: String
+      TableName: msite-chapter
+
+  MSiteWorshipServiceTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: wsId
+        Type: String
+      TableName: msite-ws
+
+  MSiteBibleStudyTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: bStudyId
+        Type: String
+      TableName: msite-bible-study
+
+Outputs:
+  MSiteApi:
+    Description: URL for application
+    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/ping'
+    Export:
+      Name: MSiteApi
