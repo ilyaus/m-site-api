@@ -1,0 +1,10 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "ubf-msite-api"
+s3_bucket = "ubf-msite-deploy"
+s3_prefix = "ubf-msite-api"
+region = "us-east-2"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []

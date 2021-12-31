@@ -6,14 +6,21 @@ Globals:
     EndpointConfiguration: REGIONAL
 
 Resources:
+  MSiteLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/ubf-msite-api
+      RetentionInDays: 1
+
   MSiteFunction:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: ubf-msite-api
       Handler: org.ubf.StreamLambdaHandler::handleRequest
       Runtime: java11
       CodeUri: target/m-site-1.0-SNAPSHOT-lambda-package.zip
       MemorySize: 512
-      Policies: AWSLambdaBasicExecutionRole
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/ubf-msite-role
       Timeout: 15
       Events:
         ProxyResource:
@@ -28,7 +35,7 @@ Resources:
       PrimaryKey:
         Name: memberId
         Type: String
-      TableName: msite-members
+      TableName: ubf-msite-members
 
   MSiteFellowshipTable:
     Type: AWS::Serverless::SimpleTable
@@ -36,7 +43,7 @@ Resources:
       PrimaryKey:
         Name: fellowshipId
         Type: String
-      TableName: msite-fellowship
+      TableName: ubf-msite-fellowship
 
   MSiteCampusTable:
     Type: AWS::Serverless::SimpleTable
@@ -44,7 +51,7 @@ Resources:
       PrimaryKey:
         Name: campusId
         Type: String
-      TableName: msite-campus
+      TableName: ubf-msite-campus
 
   MSiteChapterTable:
     Type: AWS::Serverless::SimpleTable
@@ -52,7 +59,7 @@ Resources:
       PrimaryKey:
         Name: chapterId
         Type: String
-      TableName: msite-chapter
+      TableName: ubf-msite-chapter
 
   MSiteWorshipServiceTable:
     Type: AWS::Serverless::SimpleTable
@@ -60,7 +67,7 @@ Resources:
       PrimaryKey:
         Name: wsId
         Type: String
-      TableName: msite-ws
+      TableName: ubf-msite-ws
 
   MSiteBibleStudyTable:
     Type: AWS::Serverless::SimpleTable
@@ -68,7 +75,7 @@ Resources:
       PrimaryKey:
         Name: bStudyId
         Type: String
-      TableName: msite-bible-study
+      TableName: ubf-msite-bible-study
 
 Outputs:
   MSiteApi:
