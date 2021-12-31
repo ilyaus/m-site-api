@@ -1,0 +1,135 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: M-Site execution roles
+
+Parameters:
+  IAMPrefix:
+    Type: String
+    Description: Name of the prefix for IAM Roles & Policies
+    AllowedValues:
+      - ubf
+    Default: ubf
+  ResourcePrefix:
+    Type: String
+    Description: Name of the prefix
+    AllowedValues:
+      - ubf
+    Default: ubf
+  ProjectName:
+    Type: String
+    Description: Name of the project
+    AllowedValues:
+      - msite
+    Default: msite
+
+Resources:
+  MSiteExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${IAMPrefix}-${ProjectName}-role
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - states.amazonaws.com
+            Action:
+              - sts:AssumeRole
+
+      Policies:
+        - PolicyName: !Sub ${IAMPrefix}-ecs-secrets-mgr-access-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action:
+                  - secretsmanager:GetSecretValue
+                  - secretsmanager:DescribeSecret
+                  - secretsmanager:ListSecretVersionIds
+                Effect: Allow
+                Resource: !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${ResourcePrefix}-*
+
+        - PolicyName: !Sub ${IAMPrefix}-ssm-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: PlatformSSMParameterAccess
+                Action:
+                  - ssm:GetParametersByPath
+                  - ssm:GetParameters
+                  - ssm:GetParameter
+                Effect: Allow
+                Resource:
+                  - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${ResourcePrefix}-*
+                  - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${ResourcePrefix}-*/*
+
+        - PolicyName: !Sub ${IAMPrefix}-s3-full-access-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action:
+                  - s3:List*
+                  - s3:PutObject
+                  - s3:HeadObject
+                  - s3:GetObject
+                  - s3:Delete*
+                  - s3:GetBucketNotification
+                  - s3:PutBucketNotification
+                Effect: Allow
+                Resource:
+                  - !Sub arn:aws:s3:::${ResourcePrefix}-*
+                  - !Sub arn:aws:s3:::${ResourcePrefix}-*/*
+
+        - PolicyName: !Sub ${IAMPrefix}-dynamodb-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: LambdaDynamoDb
+                Effect: Allow
+                Action:
+                  - dynamodb:Describe*
+                  - dynamodb:BatchGetItem
+                  - dynamodb:GetItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:DeleteItem
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:CreateBackup
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:UpdateTable
+                  - dynamodb:UpdateTimeToLive
+                Resource:
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ResourcePrefix}-*
+
+        - PolicyName: !Sub ${IAMPrefix}-step-function-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: LambdaStepFunction
+                Effect: Allow
+                Action:
+                  - states:StartExecution
+                  - states:StopExecution
+                  - states:Describe*
+                  - states:GetExecutionHistory
+                  - states:ListExecutions
+                  - states:SendTaskSuccess
+                  - states:SendTaskFailure
+                  - states:SendTaskHeartbeat
+                Resource:
+                  - !Sub arn:aws:states:${AWS::Region}:${AWS::AccountId}:stateMachine:${ResourcePrefix}-*
+
+        - PolicyName: !Sub ${IAMPrefix}-invoke-lambda-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: InvokeLambda
+                Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource:
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ResourcePrefix}-*

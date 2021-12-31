@@ -1,0 +1,431 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/m-site/m-site/1.0.0
+  - description: M-Site API
+    url: https://members.ubfservice.com/m-site/v1
+info:
+  version: "1.0.0"
+  title: Member management
+  description: >-
+    Church member management system that allows for: 
+    keeping basic information about church attendees, 
+    tracking worship service attendance and tracking Bible Studies.
+security:
+  - application:
+      - read
+      - write
+
+tags:
+  - name: Members
+  - name: Fellowships
+  - name: Campus
+  - name: Chapter
+  - name: Worship Service
+  - name: Bible Study
+
+paths:
+  /members:
+    get:
+      tags:
+        - Members
+      summary: Get member details
+      description: >-
+        Gets details about members.
+      responses:
+        '200':
+          $ref: '#/components/responses/200_GetMembers'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '406':
+          $ref: '#/components/responses/406RequestNotAcceptable'
+        '429':
+          $ref: '#/components/responses/429TooManyRequests'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+    post:
+      tags:
+        - Members
+      summary: Add new member
+      description: >-
+        Adds new member to management site.
+      requestBody:
+        description: New member info that will be added to member management site.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMembers'
+      responses:
+        '201':
+          $ref: '#/components/responses/201_MemberCreated'
+
+  /members/{memberId}:
+    put:
+      tags:
+        - Members
+      summary: Update member
+      description: Update member information.
+      parameters:
+        - $ref: '#/components/parameters/memberId'
+      requestBody:
+        description: New member info that will be updated in member management site.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMember'
+      responses:
+        '200':
+          $ref: '#/components/responses/200_MemberUpdated'
+
+  /fellowships:
+    get:
+      tags:
+        - Fellowships
+      summary: Fellowship operations
+      description: >-
+        This operation shows how to override the global security defined above,
+        as we want to open it up for all users.
+      responses:
+        '200':
+          description: OK
+  /campus:
+    get:
+      tags:
+        - Campus
+      summary: Campus operations
+      description: >-
+        This operation shows how to override the global security defined above,
+        as we want to open it up for all users.
+      responses:
+        '200':
+          description: OK
+  /chapter:
+    get:
+      tags:
+        - Chapter
+      summary: Chapter operations
+      description: >-
+        This operation shows how to override the global security defined above,
+        as we want to open it up for all users.
+      responses:
+        '200':
+          description: OK
+  /ws:
+    get:
+      tags:
+        - Worship Service
+      summary: Worship service operations
+      description: >-
+        This operation shows how to override the global security defined above,
+        as we want to open it up for all users.
+      responses:
+        '200':
+          description: OK
+  /bstudy:
+    get:
+      tags:
+        - Bible Study
+      summary: Bible study operations
+      description: >-
+        This operation shows how to override the global security defined above,
+        as we want to open it up for all users.
+      responses:
+        '200':
+          description: OK
+
+
+components:
+  schemas:
+    Members:
+      type: array
+      description: List of members.
+      items:
+        $ref: '#/components/schemas/Member'
+
+    NewMembers:
+      type: array
+      description: List of members.
+      items:
+        $ref: '#/components/schemas/NewMember'
+
+    Member:
+      type: object
+      description: Details of a single member
+      properties:
+        memberId:
+          type: string
+          format: uuid
+        title:
+          type: string
+          example: 'Mr.'
+        firstName:
+          type: string
+          example: 'John'
+        lastName:
+          type: string
+          example: 'Smith'
+        middleName:
+          type: string
+          example: 'Paul'
+        email:
+          type: string
+          example: 'some@email.com'
+        fellowship:
+          type: string
+          format: uuid
+        address:
+          $ref: '#/components/schemas/Address'
+        phone:
+          $ref: '#/components/schemas/PhoneNumbers'
+
+    NewMember:
+      type: object
+      description: Details of a single member
+      properties:
+        title:
+          type: string
+          example: 'Mr.'
+        firstName:
+          type: string
+          example: 'John'
+        lastName:
+          type: string
+          example: 'Smith'
+        middleName:
+          type: string
+          example: 'Paul'
+        email:
+          type: string
+          example: 'some@email.com'
+        fellowship:
+          type: string
+          format: uuid
+        address:
+          $ref: '#/components/schemas/Address'
+        phone:
+          $ref: '#/components/schemas/PhoneNumbers'
+
+    Address:
+      type: object
+      description: Member's address
+      properties:
+        street:
+          type: string
+          example: '5555 S Street Ave.'
+        city:
+          type: string
+          example: 'Chicago'
+        state:
+          type: string
+          example: 'AZ'
+        country:
+          type: string
+          example: 'China'
+
+    PhoneNumbers:
+      type: array
+      items:
+        $ref: '#/components/schemas/PhoneNumber'
+
+    PhoneNumber:
+      type: object
+      properties:
+        type:
+          type: string
+          example: 'home'
+        number:
+          type: string
+          example: '+1 555 555-5555'
+
+    MemberStatuses:
+      type: array
+      items:
+        $ref: '#/components/schemas/MemberStatus'
+
+    MemberStatus:
+      type: object
+      description: Status of member update or creation.
+      required:
+        - status
+        - memberId
+      properties:
+        status:
+          type: string
+          example: 'SUCCESS'
+        memberId:
+          type: string
+          format: uuid
+        message:
+          type: string
+          example: 'Added successfully.'
+
+    Error:
+      type: object
+      description: >-
+        ErrorResponse represents error code, description for a given API.
+        Every HTTP status code returns different `code` value
+        in the response based on the nature of error occurred.
+      required:
+        - code
+        - description
+      properties:
+        code:
+          type: string
+          description: Valid HTTP response code.
+          example: '400.101'
+        description:
+          type: string
+          description: Detailed description of the error.
+          example: Request body does not match expected domain object.
+
+
+  parameters:
+    memberId:
+      name: memberId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+
+  responses:
+    200_GetMembers:
+      description: List of members.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Members'
+
+    201_MemberCreated:
+      description: Status of new member creation.
+      content:
+        applicaton/json:
+          schema:
+            $ref: '#/components/schemas/MemberStatuses'
+
+    200_MemberUpdated:
+      description: Status of member update.
+      content:
+        applicaton/json:
+          schema:
+            $ref: '#/components/schemas/MemberStatus'
+
+
+    400BadRequest:
+      description: Bad Request.
+      content:
+        application/json:
+          example:
+            code: '400.001'
+            description: Bad Request.
+          schema:
+            $ref: '#/components/schemas/Error'
+    401Unauthorized:
+      description: Unauthorized.
+      content:
+        application/json:
+          example:
+            code: '401.006'
+            description: Missing Authorization header or token value.
+          schema:
+            $ref: '#/components/schemas/Error'
+    403Forbidden:
+      description: Forbidden.
+      content:
+        application/json:
+          example:
+            code: '403.001'
+            description: Forbidden.
+          schema:
+            $ref: '#/components/schemas/Error'
+    404NotFound:
+      description: Not Found.
+      content:
+        application/json:
+          example:
+            code: '404.001'
+            description: Resource Not Found.
+          schema:
+            $ref: '#/components/schemas/Error'
+    406RequestNotAcceptable:
+      description: Request Not Acceptable.
+      content:
+        application/json:
+          example:
+            code: '406.001'
+            description: |
+              Request not acceptable. The target resource does not have a current
+              representation that would be acceptable to the user agent.
+          schema:
+            $ref: '#/components/schemas/Error'
+    413PayloadTooLarge:
+      description: Payload too large.
+      content:
+        application/json:
+          example:
+            code: '413.001'
+            description: Request Entity Too Large.
+          schema:
+            $ref: '#/components/schemas/Error'
+    415UnsupportedMediaType:
+      description: Unsupported Media Type.
+      content:
+        application/json:
+          example:
+            code: '415.001'
+            description: |
+              Requested payload format is not supported by this method on the target resource.
+              The format problem might be due to the request's indicated Content-Type or Content-Encoding,
+              or as a result of inspecting the data directly.
+          schema:
+            $ref: '#/components/schemas/Error'
+    429TooManyRequests:
+      description: Too Many Requests.
+      content:
+        application/json:
+          example:
+            code: '429.001'
+            description: Throttling rate limit exceeded.
+          schema:
+            $ref: '#/components/schemas/Error'
+    500InternalServerError:
+      description: Internal Server Error.
+      content:
+        application/json:
+          example:
+            code: '500.001'
+            description: Internal Server Error.
+          schema:
+            $ref: '#/components/schemas/Error'
+    503ServiceUnavailable:
+      description: Service Unavailable.
+      content:
+        application/json:
+          example:
+            code: '503.001'
+            description: Service is currently not available
+          schema:
+            $ref: '#/components/schemas/Error'
+
+
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: 'http://ubf.com/oauth/token'
+          scopes:
+            write: allows modifying resources
+            read: allows reading resources
