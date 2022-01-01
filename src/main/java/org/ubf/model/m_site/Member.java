@@ -12,6 +12,7 @@
 
 package org.ubf.model.m_site;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Arrays;
 
@@ -62,13 +63,12 @@ public class Member {
   @SerializedName("fellowship")
   private UUID fellowship = null;
 
-  @DynamoDBTypeConverted(converter = AddressConverter.class)
   @SerializedName("address")
   private Address address = null;
 
-  @DynamoDBTypeConverted(converter = PhoneNumbersConverter.class)
   @SerializedName("phone")
-  private PhoneNumbers phone = null;
+  @DynamoDBAttribute(attributeName = "phone")
+  private List<PhoneNumber> phone = null;
 
   public Member memberId(String memberId) {
     this.memberId = memberId;
@@ -224,11 +224,11 @@ public class Member {
    * @return phone
   **/
   @Schema(description = "")
-  public PhoneNumbers getPhone() {
+  public List<PhoneNumber> getPhone() {
     return phone;
   }
 
-  public void setPhone(PhoneNumbers phone) {
+  public void setPhone(List<PhoneNumber> phone) {
     this.phone = phone;
   }
 

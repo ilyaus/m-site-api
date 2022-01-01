@@ -4,12 +4,12 @@ public class Error {
   private final String code;
   private final String message;
 
-  public Error(String status, String message) {
-    this.code = status;
+  public Error(String code, String message) {
+    this.code = code;
     this.message = message;
   }
 
-  public String getStatus() {
+  public String getCode() {
     return code;
   }
 
