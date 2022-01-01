@@ -26,7 +26,7 @@ import java.util.UUID;
  * Status of member update or creation.
  */
 @Schema(description = "Status of member update or creation.")
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2021-12-29T22:00:45.549199200-06:00[America/Chicago]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2021-12-31T22:46:11.968117300-06:00[America/Chicago]")
 public class MemberStatus {
   @SerializedName("status")
   private String status = null;

@@ -14,8 +14,6 @@ package org.ubf.model.m_site;
 
 import java.util.Objects;
 import java.util.Arrays;
-
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
@@ -27,7 +25,7 @@ import java.io.IOException;
  * Member&#x27;s address
  */
 @Schema(description = "Member's address")
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2021-12-29T22:00:45.549199200-06:00[America/Chicago]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2021-12-31T22:46:11.968117300-06:00[America/Chicago]")
 public class Address {
   @SerializedName("street")
   private String street = null;

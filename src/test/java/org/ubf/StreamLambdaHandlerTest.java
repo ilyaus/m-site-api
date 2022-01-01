@@ -61,7 +61,7 @@ public class StreamLambdaHandlerTest {
   public void members_streamRequest_respondsWithOutData() {
     InputStream requestStream = new AwsProxyRequestBuilder("/m-site/v1/members", HttpMethod.GET)
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
-        .queryString("memberId", "non-existent")
+        .queryString("memberId", "3fa85f64-ffff-ffff-ffff-2c963f66afa6")
         .buildStream();
     ByteArrayOutputStream responseStream = new ByteArrayOutputStream();
 

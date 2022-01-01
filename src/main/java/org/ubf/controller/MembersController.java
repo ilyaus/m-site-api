@@ -51,7 +51,7 @@ public class MembersController {
 
   @PutMapping("/members/{memberId}")
   public ResponseEntity<Object> updateMember(
-      @RequestBody NewMember request, @PathVariable String memberId) {
+      @RequestBody Member request, @PathVariable String memberId) {
     return ResponseEntity.ok(new MemberStatus());
   }
 
