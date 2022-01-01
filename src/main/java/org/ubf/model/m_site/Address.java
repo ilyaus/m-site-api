@@ -28,7 +28,6 @@ import java.io.IOException;
  */
 @Schema(description = "Member's address")
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2021-12-29T22:00:45.549199200-06:00[America/Chicago]")
-@DynamoDBDocument
 public class Address {
   @SerializedName("street")
   private String street = null;

@@ -30,12 +30,30 @@ Resources:
             Method: any
 
   MSiteMemberTable:
-    Type: AWS::Serverless::SimpleTable
+    Type: AWS::DynamoDB::Table
     Properties:
-      PrimaryKey:
-        Name: memberId
-        Type: String
       TableName: ubf-msite-members
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        -
+          AttributeName: memberId
+          AttributeType: S
+        -
+          AttributeName: fellowshipId
+          AttributeType: S
+      KeySchema:
+        -
+          AttributeName: memberId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        -
+          IndexName: Fellowship-Index
+          KeySchema:
+            -
+              AttributeName: fellowshipId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
 
   MSiteFellowshipTable:
     Type: AWS::Serverless::SimpleTable
