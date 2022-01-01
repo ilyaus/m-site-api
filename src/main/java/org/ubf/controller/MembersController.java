@@ -13,6 +13,7 @@ import org.ubf.model.m_site.*;
 import org.ubf.utils.Error;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @EnableWebMvc
@@ -32,12 +33,19 @@ public class MembersController {
     String campusId = queryParams.getOrDefault("campusId", "");
     String lastName = queryParams.getOrDefault("lastName", "");
 
-    Member member = memberDao.get(memberId);
+    Members members = null;
 
-    if (member == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Record not found", new Exception());
+    if (!memberId.isEmpty()) {
+      members = memberDao.getMembersById(UUID.fromString(memberId));
+    } else if (!fellowshipId.isEmpty()) {
+      members = memberDao.getMembersByFellowshipId(UUID.fromString(fellowshipId));
     }
-    return ResponseEntity.ok(memberDao.get(memberId));
+
+    if (members == null || members.size() == 0) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Record(s) not found.", new Exception());
+    }
+
+    return ResponseEntity.ok(members);
   }
 
   @PostMapping("/members")

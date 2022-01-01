@@ -22,7 +22,7 @@ import java.io.InputStream;
 
 import static org.junit.Assert.*;
 
-public class StreamLambdaHandlerTest {
+public class MemberControllerTest {
 
   private static StreamLambdaHandler handler;
   private static Context lambdaContext;
@@ -36,7 +36,7 @@ public class StreamLambdaHandlerTest {
   }
 
   @Test
-  public void members_streamRequest_respondsWithData() {
+  public void members_respondsWithData() {
     InputStream requestStream = new AwsProxyRequestBuilder("/m-site/v1/members", HttpMethod.GET)
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
         .queryString("memberId", "3fa85f64-5717-4562-b3fc-2c963f66afa6")
@@ -58,7 +58,7 @@ public class StreamLambdaHandlerTest {
   }
 
   @Test
-  public void members_streamRequest_respondsWithOutData() {
+  public void members_respondsWithOutData() {
     InputStream requestStream = new AwsProxyRequestBuilder("/m-site/v1/members", HttpMethod.GET)
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
         .queryString("memberId", "3fa85f64-ffff-ffff-ffff-2c963f66afa6")
@@ -80,7 +80,51 @@ public class StreamLambdaHandlerTest {
   }
 
   @Test
-  public void members_streamRequest_postMemberValidData() {
+  public void members_getMembersByFellowshipIdWithData() {
+    InputStream requestStream = new AwsProxyRequestBuilder("/m-site/v1/members", HttpMethod.GET)
+        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+        .queryString("fellowshipId", "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+        .buildStream();
+    ByteArrayOutputStream responseStream = new ByteArrayOutputStream();
+
+    handle(requestStream, responseStream);
+
+    AwsProxyResponse response = readResponse(responseStream);
+    assertNotNull(response);
+    logger.log(response.getBody());
+
+    assertEquals(Response.Status.OK.getStatusCode(), response.getStatusCode());
+
+    assertFalse(response.isBase64Encoded());
+
+    assertTrue(response.getMultiValueHeaders().containsKey(HttpHeaders.CONTENT_TYPE));
+    assertTrue(response.getMultiValueHeaders().getFirst(HttpHeaders.CONTENT_TYPE).startsWith(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  public void members_getMembersByFellowshipIdWithoutData() {
+    InputStream requestStream = new AwsProxyRequestBuilder("/m-site/v1/members", HttpMethod.GET)
+        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+        .queryString("fellowshipId", "3fa85f64-ffff-ffff-ffff-2c963f66afa6")
+        .buildStream();
+    ByteArrayOutputStream responseStream = new ByteArrayOutputStream();
+
+    handle(requestStream, responseStream);
+
+    AwsProxyResponse response = readResponse(responseStream);
+    assertNotNull(response);
+    logger.log(response.getBody());
+
+    assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatusCode());
+
+    assertFalse(response.isBase64Encoded());
+
+    assertTrue(response.getMultiValueHeaders().containsKey(HttpHeaders.CONTENT_TYPE));
+    assertTrue(response.getMultiValueHeaders().getFirst(HttpHeaders.CONTENT_TYPE).startsWith(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  public void members_postMemberValidData() {
     InputStream requestStream = new AwsProxyRequestBuilder("/m-site/v1/members", HttpMethod.POST)
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
@@ -92,7 +136,7 @@ public class StreamLambdaHandlerTest {
             "    \"lastName\": \"Smith\",\n" +
             "    \"middleName\": \"Paul\",\n" +
             "    \"email\": \"some@email.com\",\n" +
-            "    \"fellowship\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n" +
+            "    \"fellowshipId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n" +
             "    \"address\": {\n" +
             "      \"street\": \"5555 S Street Ave.\",\n" +
             "      \"city\": \"Chicago\",\n" +
@@ -125,7 +169,7 @@ public class StreamLambdaHandlerTest {
   }
 
   @Test
-  public void members_streamRequest_postEmptyData() {
+  public void members_postEmptyData() {
     InputStream requestStream = new AwsProxyRequestBuilder("/m-site/v1/members", HttpMethod.POST)
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
@@ -137,13 +181,8 @@ public class StreamLambdaHandlerTest {
 
     AwsProxyResponse response = readResponse(responseStream);
 
-    if (response != null) {
-      logger.log(response.getBody());
-    } else {
-      logger.log("Response is null");
-    }
-
     assertNotNull(response);
+    logger.log(response.getBody());
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatusCode());
 
     assertFalse(response.isBase64Encoded());
@@ -153,7 +192,7 @@ public class StreamLambdaHandlerTest {
   }
 
   @Test
-  public void invalidResource_streamRequest_responds404() {
+  public void invalidResource_responds404() {
     InputStream requestStream = new AwsProxyRequestBuilder("/m-site/v1/non-existent", HttpMethod.GET)
         .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
         .buildStream();
