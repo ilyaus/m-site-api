@@ -21,7 +21,7 @@ import org.ubf.model.m_site.MemberStatus;
  * MemberStatuses
  */
 
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2021-12-29T22:00:45.549199200-06:00[America/Chicago]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2021-12-31T22:46:11.968117300-06:00[America/Chicago]")
 public class MemberStatuses extends ArrayList<MemberStatus> {
 
   @Override

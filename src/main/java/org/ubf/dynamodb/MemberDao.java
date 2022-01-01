@@ -5,6 +5,7 @@ import org.ubf.model.m_site.Member;
 import org.ubf.model.m_site.Members;
 
 import java.util.List;
+import java.util.UUID;
 
 public class MemberDao extends BaseDynamoDb {
 
@@ -15,10 +16,10 @@ public class MemberDao extends BaseDynamoDb {
   }
 
   public Member get(String memberId) {
-    return mapper.load(Member.class, memberId);
+    return mapper.load(Member.class, UUID.fromString(memberId));
   }
 
-  public void delete(String id) {
+  public void delete(UUID id) {
     Member m = new Member();
     m.memberId(id);
 

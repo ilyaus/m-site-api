@@ -25,7 +25,7 @@ import java.io.IOException;
  * ErrorResponse represents error code, description for a given API. Every HTTP status code returns different &#x60;code&#x60; value in the response based on the nature of error occurred.
  */
 @Schema(description = "ErrorResponse represents error code, description for a given API. Every HTTP status code returns different `code` value in the response based on the nature of error occurred.")
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2021-12-29T22:00:45.549199200-06:00[America/Chicago]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2021-12-31T22:46:11.968117300-06:00[America/Chicago]")
 public class Error {
   @SerializedName("code")
   private String code = null;
