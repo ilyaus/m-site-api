@@ -97,11 +97,24 @@
             <version>${gson.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-dynamodb</artifactId>
+            <version>1.12.131</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>RELEASE</version>
         </dependency>
 
     </dependencies>

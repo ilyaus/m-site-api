@@ -45,15 +45,15 @@ public class SpringApiConfig {
    *
    * To enable custom @ControllerAdvice classes remove this bean.
    */
-  @Bean
-  public HandlerExceptionResolver handlerExceptionResolver() {
-    return new HandlerExceptionResolver() {
-
-      @Override
-      public ModelAndView resolveException(
-          HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        return null;
-      }
-    };
-  }
+//  @Bean
+//  public HandlerExceptionResolver handlerExceptionResolver() {
+//    return new HandlerExceptionResolver() {
+//
+//      @Override
+//      public ModelAndView resolveException(
+//          HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+//        return null;
+//      }
+//    };
+//  }
 }
