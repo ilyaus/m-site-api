@@ -13,12 +13,13 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ubf.controller.FellowshipController;
 import org.ubf.controller.MembersController;
 
 @Configuration
 // We use direct @Import instead of @ComponentScan to speed up cold starts
 // @ComponentScan("org.ubf.controller")
-@Import({MembersController.class})
+@Import({MembersController.class, FellowshipController.class})
 public class SpringApiConfig {
   /*
    * Create required HandlerMapping, to avoid several default HandlerMapping instances being created
