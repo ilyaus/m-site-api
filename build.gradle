@@ -21,7 +21,10 @@ dependencies {
           'com.amazonaws:aws-java-sdk-dynamodb:1.12.131',
   )
 
-  testImplementation("junit:junit:4.13.2")
+  testImplementation(
+          'junit:junit:4.13.2',
+          'com.amazonaws:DynamoDBLocal:1.15.0'
+  )
 }
 
 task buildZip(type: Zip) {
