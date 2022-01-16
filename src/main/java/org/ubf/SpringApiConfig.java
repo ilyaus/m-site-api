@@ -13,12 +13,13 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ubf.controller.FellowshipController;
 import org.ubf.controller.MembersController;
 
 @Configuration
 // We use direct @Import instead of @ComponentScan to speed up cold starts
 // @ComponentScan("org.ubf.controller")
-@Import({MembersController.class})
+@Import({MembersController.class, FellowshipController.class})
 public class SpringApiConfig {
   /*
    * Create required HandlerMapping, to avoid several default HandlerMapping instances being created
@@ -45,15 +46,15 @@ public class SpringApiConfig {
    *
    * To enable custom @ControllerAdvice classes remove this bean.
    */
-  @Bean
-  public HandlerExceptionResolver handlerExceptionResolver() {
-    return new HandlerExceptionResolver() {
-
-      @Override
-      public ModelAndView resolveException(
-          HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        return null;
-      }
-    };
-  }
+//  @Bean
+//  public HandlerExceptionResolver handlerExceptionResolver() {
+//    return new HandlerExceptionResolver() {
+//
+//      @Override
+//      public ModelAndView resolveException(
+//          HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+//        return null;
+//      }
+//    };
+//  }
 }

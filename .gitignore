@@ -5,3 +5,5 @@ output-template.yml
 
 target
 build
+.gradle
+native-libs

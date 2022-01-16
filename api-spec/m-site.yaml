@@ -1,6 +1,9 @@
 openapi: 3.0.0
 servers:
   # Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/m-site/M-Site/1.0.0
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/m-site/m-site/1.0.0
   - description: M-Site API
@@ -33,6 +36,12 @@ paths:
       summary: Get member details
       description: >-
         Gets details about members.
+      operationId: getMembers
+      parameters:
+        - $ref: '#/components/parameters/memberIdQuery'
+        - $ref: '#/components/parameters/fellowshipId'
+        - $ref: '#/components/parameters/campusId'
+        - $ref: '#/components/parameters/lastName'
       responses:
         '200':
           $ref: '#/components/responses/200_GetMembers'
@@ -44,14 +53,9 @@ paths:
           $ref: '#/components/responses/403Forbidden'
         '404':
           $ref: '#/components/responses/404NotFound'
-        '406':
-          $ref: '#/components/responses/406RequestNotAcceptable'
-        '429':
-          $ref: '#/components/responses/429TooManyRequests'
         '500':
           $ref: '#/components/responses/500InternalServerError'
-        '503':
-          $ref: '#/components/responses/503ServiceUnavailable'
+
     post:
       tags:
         - Members
@@ -64,7 +68,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewMembers'
+              $ref: '#/components/schemas/Members'
+            example:
+              -
+                title: 'Mr.'
+                firstName: 'John'
+                lastName: 'Doe'
+                email: 'email@domain.com'
+                fellowhipId: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                phone:
+                  -
+                    type: 'cell'
+                    number: '+1 555 555-5555'
       responses:
         '201':
           $ref: '#/components/responses/201_MemberCreated'
@@ -83,7 +98,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewMember'
+              $ref: '#/components/schemas/Member'
+            example:
+              -
+                title: 'Mr.'
+                firstName: 'John'
+                lastName: 'Doe'
+                email: 'email@domain.com'
+                fellowhipId: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                phone:
+                  -
+                    type: 'cell'
+                    number: '+1 555 555-5555'
       responses:
         '200':
           $ref: '#/components/responses/200_MemberUpdated'
@@ -153,15 +179,14 @@ components:
       items:
         $ref: '#/components/schemas/Member'
 
-    NewMembers:
-      type: array
-      description: List of members.
-      items:
-        $ref: '#/components/schemas/NewMember'
-
     Member:
       type: object
       description: Details of a single member
+      required:
+        - email
+        - fellowship
+        - firstName
+        - lastName
       properties:
         memberId:
           type: string
@@ -181,34 +206,7 @@ components:
         email:
           type: string
           example: 'some@email.com'
-        fellowship:
-          type: string
-          format: uuid
-        address:
-          $ref: '#/components/schemas/Address'
-        phone:
-          $ref: '#/components/schemas/PhoneNumbers'
-
-    NewMember:
-      type: object
-      description: Details of a single member
-      properties:
-        title:
-          type: string
-          example: 'Mr.'
-        firstName:
-          type: string
-          example: 'John'
-        lastName:
-          type: string
-          example: 'Smith'
-        middleName:
-          type: string
-          example: 'Paul'
-        email:
-          type: string
-          example: 'some@email.com'
-        fellowship:
+        fellowshipId:
           type: string
           format: uuid
         address:
@@ -299,6 +297,36 @@ components:
         type: string
         format: uuid
 
+    memberIdQuery:
+      name: memberId
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+
+    fellowshipId:
+      name: fellowshipId
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+
+    campusId:
+      name: campusId
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+
+    lastName:
+      name: lastName
+      in: query
+      required: false
+      schema:
+        type: string
 
   responses:
     200_GetMembers:
@@ -322,14 +350,13 @@ components:
           schema:
             $ref: '#/components/schemas/MemberStatus'
 
-
     400BadRequest:
       description: Bad Request.
       content:
         application/json:
           example:
             code: '400.001'
-            description: Bad Request.
+            message: Bad Request.
           schema:
             $ref: '#/components/schemas/Error'
     401Unauthorized:
@@ -338,7 +365,7 @@ components:
         application/json:
           example:
             code: '401.006'
-            description: Missing Authorization header or token value.
+            message: Missing Authorization header or token value.
           schema:
             $ref: '#/components/schemas/Error'
     403Forbidden:
@@ -347,7 +374,7 @@ components:
         application/json:
           example:
             code: '403.001'
-            description: Forbidden.
+            message: Forbidden.
           schema:
             $ref: '#/components/schemas/Error'
     404NotFound:
@@ -356,48 +383,7 @@ components:
         application/json:
           example:
             code: '404.001'
-            description: Resource Not Found.
-          schema:
-            $ref: '#/components/schemas/Error'
-    406RequestNotAcceptable:
-      description: Request Not Acceptable.
-      content:
-        application/json:
-          example:
-            code: '406.001'
-            description: |
-              Request not acceptable. The target resource does not have a current
-              representation that would be acceptable to the user agent.
-          schema:
-            $ref: '#/components/schemas/Error'
-    413PayloadTooLarge:
-      description: Payload too large.
-      content:
-        application/json:
-          example:
-            code: '413.001'
-            description: Request Entity Too Large.
-          schema:
-            $ref: '#/components/schemas/Error'
-    415UnsupportedMediaType:
-      description: Unsupported Media Type.
-      content:
-        application/json:
-          example:
-            code: '415.001'
-            description: |
-              Requested payload format is not supported by this method on the target resource.
-              The format problem might be due to the request's indicated Content-Type or Content-Encoding,
-              or as a result of inspecting the data directly.
-          schema:
-            $ref: '#/components/schemas/Error'
-    429TooManyRequests:
-      description: Too Many Requests.
-      content:
-        application/json:
-          example:
-            code: '429.001'
-            description: Throttling rate limit exceeded.
+            message: Resource Not Found.
           schema:
             $ref: '#/components/schemas/Error'
     500InternalServerError:
@@ -406,26 +392,16 @@ components:
         application/json:
           example:
             code: '500.001'
-            description: Internal Server Error.
+            message: Internal Server Error.
           schema:
             $ref: '#/components/schemas/Error'
-    503ServiceUnavailable:
-      description: Service Unavailable.
-      content:
-        application/json:
-          example:
-            code: '503.001'
-            description: Service is currently not available
-          schema:
-            $ref: '#/components/schemas/Error'
-
 
   securitySchemes:
     application:
       type: oauth2
       flows:
         clientCredentials:
-          tokenUrl: 'http://ubf.com/oauth/token'
+          tokenUrl: 'http://example.com/oauth/token'
           scopes:
             write: allows modifying resources
             read: allows reading resources

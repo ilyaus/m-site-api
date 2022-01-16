@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.ubf.dynamodb.MemberDao;
-import org.ubf.model.m_site.*;
+import org.ubf.model.m_site.Member;
+import org.ubf.model.m_site.MemberStatus;
+import org.ubf.model.m_site.MemberStatuses;
+import org.ubf.model.m_site.Members;
 import org.ubf.utils.Error;
 
 import java.util.Map;
@@ -20,47 +23,25 @@ import java.util.UUID;
 @EnableWebMvc
 @RequestMapping(value = "/m-site/v1")
 @ResponseBody @ResponseStatus(value = HttpStatus.OK)
-public class MembersController {
-  private static final Logger logger = LoggerFactory.getLogger(MembersController.class);
-  MemberDao memberDao = new MemberDao();
+public class FellowshipController {
+  private static final Logger logger = LoggerFactory.getLogger(FellowshipController.class);
 
-  @GetMapping("/members")
+  @GetMapping("/fellowships")
   public ResponseEntity<Object> getMembers(@RequestParam(required = false) Map<String, String> queryParams) {
     logger.info("Getting members: {}", queryParams);
 
-    // Valid query parameters:
-    String memberId = queryParams.getOrDefault("memberId", "");
-    String fellowshipId = queryParams.getOrDefault("fellowshipId", "");
-    String campusId = queryParams.getOrDefault("campusId", "");
-    String lastName = queryParams.getOrDefault("lastName", "");
-
-    Members members = null;
-
-    if (!memberId.isEmpty()) {
-      members = memberDao.getMembersById(UUID.fromString(memberId));
-    } else if (!fellowshipId.isEmpty()) {
-      members = memberDao.getMembersByFellowshipId(UUID.fromString(fellowshipId));
-    }
-
-    if (members == null || members.size() == 0) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Record(s) not found.", new Exception());
-    }
-
-    return ResponseEntity.ok(members);
+    return ResponseEntity.ok("");
   }
 
-  @PostMapping("/members")
+  @PostMapping("/fellowships")
   public ResponseEntity<Object> addNewMembers(@RequestBody Members request) {
     logger.info("Posting members: {}", request.toString());
 
-    request.forEach(memberDao::put);
-
-    return ResponseEntity.ok(new MemberStatuses());
+    return ResponseEntity.ok("");
   }
 
-  @PutMapping("/members/{memberId}")
-  public ResponseEntity<Object> updateMember(
-      @RequestBody Member request, @PathVariable String memberId) {
+  @PutMapping("/fellowships/{fellowshipId}")
+  public ResponseEntity<Object> updateMember(@RequestBody Member request, @PathVariable String memberId) {
     return ResponseEntity.ok(new MemberStatus());
   }
 
