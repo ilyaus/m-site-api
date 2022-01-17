@@ -1,11 +1,8 @@
 openapi: 3.0.0
 servers:
   # Added by API Auto Mocking Plugin
-  # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/m-site/M-Site/1.0.0
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/m-site/m-site/1.0.0
   - description: M-Site API
     url: https://members.ubfservice.com/m-site/v1
 info:
@@ -23,8 +20,8 @@ security:
 tags:
   - name: Members
   - name: Fellowships
-  - name: Campus
-  - name: Chapter
+  - name: Campuses
+  - name: Chapters
   - name: Worship Service
   - name: Bible Study
 
@@ -39,8 +36,8 @@ paths:
       operationId: getMembers
       parameters:
         - $ref: '#/components/parameters/memberIdQuery'
-        - $ref: '#/components/parameters/fellowshipId'
-        - $ref: '#/components/parameters/campusId'
+        - $ref: '#/components/parameters/fellowshipIdQuery'
+        - $ref: '#/components/parameters/campusIdQuery'
         - $ref: '#/components/parameters/lastName'
       responses:
         '200':
@@ -62,6 +59,7 @@ paths:
       summary: Add new member
       description: >-
         Adds new member to management site.
+      operationId: createMembers
       requestBody:
         description: New member info that will be added to member management site.
         required: true
@@ -83,17 +81,26 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/201_MemberCreated'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
 
   /members/{memberId}:
     put:
       tags:
         - Members
       summary: Update member
-      description: Update member information.
+      description: Updates member information.
+      operationId: updateMember
       parameters:
         - $ref: '#/components/parameters/memberId'
       requestBody:
-        description: New member info that will be updated in member management site.
+        description: Member info that will be updated in member management site.
         required: true
         content:
           application/json:
@@ -113,40 +120,379 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200_MemberUpdated'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+    delete:
+      tags:
+        - Members
+      summary: Delete member
+      description: Deletes member information.
+      operationId: deleteMembers
+      parameters:
+        - $ref: '#/components/parameters/memberId'
+
+      responses:
+        '204':
+          $ref: '#/components/responses/204_Deleted'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
 
   /fellowships:
     get:
       tags:
         - Fellowships
-      summary: Fellowship operations
+      summary: Get fellowship details
       description: >-
-        This operation shows how to override the global security defined above,
-        as we want to open it up for all users.
+        Gets detailed fellowship information.
+      operationId: getFellowships
+      parameters:
+        - $ref: '#/components/parameters/fellowshipIdQuery'
+        - $ref: '#/components/parameters/fellowshipName'
       responses:
         '200':
-          description: OK
-  /campus:
+          $ref: '#/components/responses/200_GetFellowships'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+    post:
+      tags:
+        - Fellowships
+      summary: Add new fellowship
+      description: >-
+        Adds new fellowship to management site.
+      operationId: createFellowships
+      requestBody:
+        description: New fellowship info that will be added to member management site.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fellowships'
+            example:
+              -
+                fellowshipName: 'Livingstones'
+                fellowshipLeaderId: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                campusId: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                status: 'ACTIVE'
+
+      responses:
+        '201':
+          $ref: '#/components/responses/201_FellowshipCreated'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /fellowships/{fellowshipId}:
+    put:
+      tags:
+        - Fellowships
+      summary: Update fellowship
+      description: Updates fellowship information.
+      operationId: updateFellowship
+      parameters:
+        - $ref: '#/components/parameters/fellowshipId'
+      requestBody:
+        description: Fellowship info that will be updated in member management site.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Member'
+            example:
+              -
+                fellowshipName: 'Livingstones'
+                fellowshipLeaderId: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                campusId: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                status: 'ACTIVE'
+      responses:
+        '200':
+          $ref: '#/components/responses/200_FellowshipUpdated'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+    delete:
+      tags:
+        - Fellowships
+      summary: Delete fellowship
+      description: Deletes fellowship information.
+      operationId: deleteFellowship
+      parameters:
+        - $ref: '#/components/parameters/fellowshipId'
+      responses:
+        '204':
+          $ref: '#/components/responses/204_Deleted'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /campuses:
     get:
       tags:
-        - Campus
-      summary: Campus operations
+        - Campuses
+      summary: Get campus details
       description: >-
-        This operation shows how to override the global security defined above,
-        as we want to open it up for all users.
+        Gets detailed campus information.
+      operationId: getCampuses
+      parameters:
+        - $ref: '#/components/parameters/campusIdQuery'
+        - $ref: '#/components/parameters/chapterIdQuery'
+        - $ref: '#/components/parameters/campusName'
       responses:
         '200':
-          description: OK
-  /chapter:
+          $ref: '#/components/responses/200_GetCampuses'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+    post:
+      tags:
+        - Campuses
+      summary: Add new campus
+      description: >-
+        Adds new campus to management site.
+      operationId: createCampuses
+      requestBody:
+        description: New campus info that will be added to member management site.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Campuses'
+            example:
+              -
+                campusName: 'NEIU'
+                campusCoordinatorId: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                chapterId: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                status: 'ACTIVE'
+
+      responses:
+        '201':
+          $ref: '#/components/responses/201_CampusCreated'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /campuses/{campusId}:
+    put:
+      tags:
+        - Campuses
+      summary: Update campus
+      description: Updates campus information.
+      operationId: updateCampus
+      parameters:
+        - $ref: '#/components/parameters/campusId'
+      requestBody:
+        description: Fellowship info that will be updated in member management site.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Campus'
+            example:
+              -
+                campusName: 'NEIU'
+                campusCoordinatorId: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                chapterId: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                status: 'ACTIVE'
+      responses:
+        '200':
+          $ref: '#/components/responses/200_CampusUpdated'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+    delete:
+      tags:
+        - Campuses
+      summary: Delete campus
+      description: Deletes campus information.
+      operationId: deleteCampus
+      parameters:
+        - $ref: '#/components/parameters/campusId'
+
+      responses:
+        '204':
+          $ref: '#/components/responses/204_Deleted'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /chapters:
     get:
       tags:
-        - Chapter
-      summary: Chapter operations
+        - Chapters
+      summary: Get campus details
       description: >-
-        This operation shows how to override the global security defined above,
-        as we want to open it up for all users.
+        Gets detailed campus information.
+      operationId: getChapters
+      parameters:
+        - $ref: '#/components/parameters/chapterIdQuery'
+        - $ref: '#/components/parameters/chapterName'
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/200_GetChapters'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+    post:
+      tags:
+        - Chapters
+      summary: Add new chapter
+      description: >-
+        Adds new chapter to management site.
+      operationId: createChapter
+      requestBody:
+        description: New chapter info that will be added to member management site.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Chapters'
+            example:
+              -
+                chapterName: 'Chicago'
+                status: 'ACTIVE'
+
+      responses:
+        '201':
+          $ref: '#/components/responses/201_ChapterCreated'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /chapters/{chapterId}:
+    put:
+      tags:
+        - Chapters
+      summary: Update chapter
+      description: Updates chapter information.
+      operationId: updateChapter
+      parameters:
+        - $ref: '#/components/parameters/chapterId'
+      requestBody:
+        description: Chapter info that will be updated in member management site.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Chapter'
+            example:
+              -
+                chapterName: 'Chicago'
+                status: 'ACTIVE'
+      responses:
+        '200':
+          $ref: '#/components/responses/200_ChapterUpdated'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+    delete:
+      tags:
+        - Chapters
+      summary: Delete chapter
+      description: Deletes chapter information.
+      operationId: deleteChapter
+      parameters:
+        - $ref: '#/components/parameters/chapterId'
+
+      responses:
+        '204':
+          $ref: '#/components/responses/204_Deleted'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
   /ws:
     get:
       tags:
@@ -268,6 +614,120 @@ components:
           type: string
           example: 'Added successfully.'
 
+    Fellowships:
+      type: array
+      items:
+        $ref: '#/components/schemas/Fellowship'
+
+    Fellowship:
+      type: object
+      properties:
+        fellowshipId:
+          type: string
+          format: uuid
+        fellowshipName:
+          type: string
+          example: 'Livingstone'
+        fellowshipLeaderId:
+          type: string
+          format: uuid
+        campusId:
+          type: string
+          format: uuid
+
+    FellowshipStatuses:
+      type: array
+      items:
+        $ref: '#/components/schemas/FellowshipStatus'
+
+    FellowshipStatus:
+      type: object
+      description: Status of fellowship update or creation.
+      properties:
+        status:
+          type: string
+          example: 'SUCCESS'
+        fellowshipId:
+          type: string
+          format: uuid
+        message:
+          type: string
+          example: 'Added successfully.'
+
+    Campuses:
+      type: array
+      items:
+        $ref: '#/components/schemas/Campus'
+
+    Campus:
+      type: object
+      properties:
+        campusId:
+          type: string
+          format: uuid
+        campusName:
+          type: string
+          example: 'NEIU'
+        campusCoordinatorId:
+          type: string
+          format: uuid
+        chapterId:
+          type: string
+          format: uuid
+
+    CampusStatuses:
+      type: array
+      items:
+        $ref: '#/components/schemas/CampusStatus'
+
+    CampusStatus:
+      type: object
+      description: Status of campus update or creation.
+      properties:
+        status:
+          type: string
+          example: 'SUCCESS'
+        campusId:
+          type: string
+          format: uuid
+        message:
+          type: string
+          example: 'Added successfully.'
+
+    Chapters:
+      type: array
+      items:
+        $ref: '#/components/schemas/Chapter'
+
+    Chapter:
+      type: object
+      properties:
+        chapterId:
+          type: string
+          format: uuid
+        chapterName:
+          type: string
+          example: 'Chicago'
+
+    ChapterStatuses:
+      type: array
+      items:
+        $ref: '#/components/schemas/ChapterStatus'
+
+    ChapterStatus:
+      type: object
+      description: Status of chapter update or creation.
+      properties:
+        status:
+          type: string
+          example: 'SUCCESS'
+        chapterId:
+          type: string
+          format: uuid
+        message:
+          type: string
+          example: 'Added successfully.'
+
     Error:
       type: object
       description: >-
@@ -286,7 +746,6 @@ components:
           type: string
           description: Detailed description of the error.
           example: Request body does not match expected domain object.
-
 
   parameters:
     memberId:
@@ -307,19 +766,75 @@ components:
 
     fellowshipId:
       name: fellowshipId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    fellowshipIdQuery:
+      name: fellowshipId
       in: query
       required: false
       schema:
         type: string
         format: uuid
 
+    fellowshipName:
+      name: fellowshipName
+      in: query
+      required: false
+      schema:
+        type: string
+        example: 'Livingstones'
+
     campusId:
+      name: campusId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    campusIdQuery:
       name: campusId
       in: query
       required: false
       schema:
         type: string
         format: uuid
+
+    campusName:
+      name: campusName
+      in: query
+      required: false
+      schema:
+        type: string
+        example: 'NEIU'
+
+    chapterId:
+      name: chapterId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    chapterIdQuery:
+      name: chapterId
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+
+    chapterName:
+      name: chapterName
+      in: query
+      required: false
+      schema:
+        type: string
+        example: 'Chicago'
 
     lastName:
       name: lastName
@@ -336,6 +851,27 @@ components:
           schema:
             $ref: '#/components/schemas/Members'
 
+    200_GetFellowships:
+      description: List of fellowshipos.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Fellowships'
+
+    200_GetCampuses:
+      description: List of campuses.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Campuses'
+
+    200_GetChapters:
+      description: List of chapters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Chapters'
+
     201_MemberCreated:
       description: Status of new member creation.
       content:
@@ -343,12 +879,57 @@ components:
           schema:
             $ref: '#/components/schemas/MemberStatuses'
 
+    201_FellowshipCreated:
+      description: Status of new fellowship creation.
+      content:
+        applicaton/json:
+          schema:
+            $ref: '#/components/schemas/FellowshipStatuses'
+
+    201_CampusCreated:
+      description: Status of new campus creation.
+      content:
+        applicaton/json:
+          schema:
+            $ref: '#/components/schemas/CampusStatuses'
+
+    201_ChapterCreated:
+      description: Status of new chapter creation.
+      content:
+        applicaton/json:
+          schema:
+            $ref: '#/components/schemas/ChapterStatuses'
+
     200_MemberUpdated:
       description: Status of member update.
       content:
         applicaton/json:
           schema:
             $ref: '#/components/schemas/MemberStatus'
+
+    200_FellowshipUpdated:
+      description: Status of fellowship update.
+      content:
+        applicaton/json:
+          schema:
+            $ref: '#/components/schemas/FellowshipStatus'
+
+    200_CampusUpdated:
+      description: Status of campus update.
+      content:
+        applicaton/json:
+          schema:
+            $ref: '#/components/schemas/CampusStatus'
+
+    200_ChapterUpdated:
+      description: Status of chapter update.
+      content:
+        applicaton/json:
+          schema:
+            $ref: '#/components/schemas/ChapterStatus'
+
+    204_Deleted:
+      description: Successful delete operation
 
     400BadRequest:
       description: Bad Request.
