@@ -15,11 +15,11 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <spring.version>5.3.14</spring.version>
+        <spring.version>5.3.15</spring.version>
         <junit.version>4.13.2</junit.version>
         <log4j.version>2.17.1</log4j.version>
-        <swagger-core-version>2.1.12</swagger-core-version>
-        <gson.version>2.8.9</gson.version>
+        <swagger-core-version>2.1.13</swagger-core-version>
+        <gson.version>2.9.0</gson.version>
     </properties>
 
     <dependencies>
@@ -101,7 +101,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-dynamodb</artifactId>
-            <version>1.12.138</version>
+            <version>1.12.154</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.amazonaws/DynamoDBLocal -->

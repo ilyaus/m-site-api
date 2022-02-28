@@ -55,7 +55,6 @@ public class MemberControllerTest {
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
         .body("[\n" +
             "  {\n" +
-            "    \"memberId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n" +
             "    \"title\": \"Mr.\",\n" +
             "    \"firstName\": \"John\",\n" +
             "    \"lastName\": \"Smith\",\n" +
@@ -84,7 +83,9 @@ public class MemberControllerTest {
     AwsProxyResponse response = readResponse(responseStream);
 
     assertNotNull(response);
-    logger.log(response.getBody());
+
+    logger.log("API response: " + response.getBody());
+
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatusCode());
 
     assertFalse(response.isBase64Encoded());
@@ -105,7 +106,8 @@ public class MemberControllerTest {
 
     AwsProxyResponse response = readResponse(responseStream);
     assertNotNull(response);
-    logger.log(response.getBody());
+
+    logger.log("API response: " + response.getBody());
 
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatusCode());
 
@@ -128,7 +130,9 @@ public class MemberControllerTest {
     AwsProxyResponse response = readResponse(responseStream);
 
     assertNotNull(response);
-    logger.log(response.getBody());
+
+    logger.log("API response: " + response.getBody());
+
     assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatusCode());
 
     assertFalse(response.isBase64Encoded());
@@ -148,7 +152,9 @@ public class MemberControllerTest {
     handle(requestStream, responseStream);
 
     AwsProxyResponse response = readResponse(responseStream);
+
     assertNotNull(response);
+
     logger.log(response.getBody());
 
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatusCode());
@@ -170,8 +176,10 @@ public class MemberControllerTest {
     handle(requestStream, responseStream);
 
     AwsProxyResponse response = readResponse(responseStream);
+
     assertNotNull(response);
-    logger.log(response.getBody());
+
+    logger.log("API response: " + response.getBody());
 
     assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatusCode());
 
@@ -195,8 +203,56 @@ public class MemberControllerTest {
     AwsProxyResponse response = readResponse(responseStream);
 
     assertNotNull(response);
-    logger.log(response.getBody());
+
+    logger.log("API response: " + response.getBody());
+
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatusCode());
+
+    assertFalse(response.isBase64Encoded());
+
+    assertTrue(response.getMultiValueHeaders().containsKey(HttpHeaders.CONTENT_TYPE));
+    assertTrue(response.getMultiValueHeaders().getFirst(HttpHeaders.CONTENT_TYPE).startsWith(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  public void members_updateWithValidData() {
+    String testMemberId = "7db670eb-4d5a-4f6e-8a57-517c36bd663e";
+
+    InputStream requestStream = new AwsProxyRequestBuilder("/m-site/v1/members/" + testMemberId, HttpMethod.PUT)
+        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+        .body("{\n" +
+            "    \"title\": \"Mr.\",\n" +
+            "    \"firstName\": \"John\",\n" +
+            "    \"lastName\": \"Smith\",\n" +
+            "    \"middleName\": \"Paul\",\n" +
+            "    \"email\": \"some@email.com\",\n" +
+            "    \"fellowshipId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n" +
+            "    \"address\": {\n" +
+            "      \"street\": \"5555 S Street Ave.\",\n" +
+            "      \"city\": \"Chicago\",\n" +
+            "      \"state\": \"AZ\",\n" +
+            "      \"country\": \"China\"\n" +
+            "    },\n" +
+            "    \"phone\": [\n" +
+            "      {\n" +
+            "        \"type\": \"home\",\n" +
+            "        \"number\": \"+1 555 555-5555\"\n" +
+            "      }\n" +
+            "    ]\n" +
+            "}")
+        .buildStream();
+    ByteArrayOutputStream responseStream = new ByteArrayOutputStream();
+
+    handle(requestStream, responseStream);
+
+    AwsProxyResponse response = readResponse(responseStream);
+
+    assertNotNull(response);
+
+    logger.log("API response: " + response.getBody());
+
+    assertEquals(Response.Status.OK.getStatusCode(), response.getStatusCode());
 
     assertFalse(response.isBase64Encoded());
 
@@ -214,6 +270,7 @@ public class MemberControllerTest {
     handle(requestStream, responseStream);
 
     AwsProxyResponse response = readResponse(responseStream);
+
     assertNotNull(response);
     assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatusCode());
   }

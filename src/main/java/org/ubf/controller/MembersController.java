@@ -12,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.ubf.dynamodb.MemberDao;
 import org.ubf.model.m_site.*;
 import org.ubf.utils.Error;
+import org.ubf.utils.exceptions.RecordNotFoundException;
 
 import java.util.Map;
 import java.util.UUID;
@@ -40,6 +41,8 @@ public class MembersController {
       members = memberDao.getMembersById(UUID.fromString(memberId));
     } else if (!fellowshipId.isEmpty()) {
       members = memberDao.getMembersByFellowshipId(UUID.fromString(fellowshipId));
+    } else {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please query members using memberId or fellowshipId.");
     }
 
     if (members == null || members.size() == 0) {
@@ -50,18 +53,43 @@ public class MembersController {
   }
 
   @PostMapping("/members")
-  public ResponseEntity<Object> addNewMembers(@RequestBody Members request) {
-    logger.info("Posting members: {}", request.toString());
+  public ResponseEntity<Object> addNewMembers(@RequestBody Members members) {
+    logger.debug("Posting members: {}", members.toString());
+    MemberStatuses memberStatuses = new MemberStatuses();
 
-    request.forEach(memberDao::put);
+    members.forEach(m -> {
+      try {
+        Member newMember = memberDao.put(m);
+        memberStatuses.add(new MemberStatus()
+            .memberId(newMember.getMemberId())
+            .status("SUCCESS")
+            .message("Added successfully")
+        );
+      } catch (Exception ex) {
+        memberStatuses.add(new MemberStatus()
+            .status("ERROR")
+            .message("Failed to add member: (" + ex.toString() + ")")
+        );
+      }
+    });
 
-    return ResponseEntity.ok(new MemberStatuses());
+    return ResponseEntity.ok(memberStatuses);
   }
 
   @PutMapping("/members/{memberId}")
-  public ResponseEntity<Object> updateMember(
-      @RequestBody Member request, @PathVariable String memberId) {
-    return ResponseEntity.ok(new MemberStatus());
+  public ResponseEntity<Object> updateMember(@RequestBody Member member, @PathVariable String memberId) {
+    logger.debug("Updating member: " + memberId);
+
+    try {
+      memberDao.update(member, UUID.fromString(memberId));
+    } catch (RecordNotFoundException ex) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Record not found.", new Exception());
+    }
+
+    return ResponseEntity.ok(new MemberStatus()
+        .memberId(member.getMemberId())
+        .status("SUCCESS")
+        .message("Updated successfully."));
   }
 
   @ExceptionHandler(Exception.class)
