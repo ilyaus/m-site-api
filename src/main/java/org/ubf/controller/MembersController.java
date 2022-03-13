@@ -46,7 +46,7 @@ public class MembersController {
     }
 
     if (members == null || members.size() == 0) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Record(s) not found.", new Exception());
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No records found.", new Exception());
     }
 
     return ResponseEntity.ok(members);
